@@ -6,7 +6,7 @@ package jframe;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.PreparedStatement;                                  
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import static jframe.DBConnection.con;
@@ -15,96 +15,55 @@ import static jframe.DBConnection.con;
  *
  * @author hp
  */
-public class SignUpPage extends javax.swing.JFrame {
+public class LoginPage extends javax.swing.JFrame {
 
     /**
      * Creates new form SignUpPage
      */
-    public SignUpPage() {
+    public LoginPage() {
         initComponents();
     }
     
-    //method to insert values in the users table
-    public void insertSignUpDetails(){
+  //validation
+    public boolean validateLogin(){
         String name=txt_username.getText();
         String pwd=txt_password.getText();
-        String email=txt_email.getText();
-        String contact=txt_contact.getText();
-        
-        try {
-            Connection con=DBConnection.getConnection();
-            String sql="insert into users(name,password,email,contact) values(?,?,?,?)";
-            PreparedStatement pst=con.prepareStatement(sql);
-            
-            pst.setString(1, name);
-            pst.setString(2, pwd);
-            pst.setString(3, email);
-            pst.setString(4, contact);
-            
-            int updatedRowCount=pst.executeUpdate();
-            
-            if(updatedRowCount>0){
-                JOptionPane.showMessageDialog(this, "Record Inserted Successfully");
-                LoginPage page=new LoginPage();
-                page.setVisible(true);
-                dispose();
-            }
-            else{
-                JOptionPane.showMessageDialog(this, "Record Inserted Failed !!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-            
-    }
-    
-    //validation
-    public boolean validateSignUp(){
-        String name=txt_username.getText();
-        String pwd=txt_password.getText();
-        String email=txt_email.getText();
-        String contact=txt_contact.getText();
         
         if(name.equals("")){
-            JOptionPane.showMessageDialog(this, "Please Enter Username");
+            JOptionPane.showMessageDialog(this,"Please enter username");
             return false;
         }
         if(pwd.equals("")){
-            JOptionPane.showMessageDialog(this, "Please Enter Password");
-            return false;
-        }
-        if(email.equals("")){
-            JOptionPane.showMessageDialog(this, "Please Enter Valid Email");
-            return false;
-        }
-        if(contact.equals("")){
-            JOptionPane.showMessageDialog(this, "Please Enter Contact number");
+            JOptionPane.showMessageDialog(this,"Please enter password");
             return false;
         }
         return true;
     }
     
-    //check duplicate users
-    public boolean checkDuplicateUser(){
+    //verify creds
+    public void login(){
         String name=txt_username.getText();
-        boolean isExist=false;
+        String pwd=txt_password.getText();
+        
         try {
              Class.forName("com.mysql.jdbc.Driver");
              Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3307/library_ms","root","");
              
-             PreparedStatement pst = con.prepareStatement("select * from users where name=?");
+             PreparedStatement pst = con.prepareStatement("select * from users where name=? and password=?");
              pst.setString(1, name);
+             pst.setString(2, pwd);
              ResultSet rs=pst.executeQuery();
              if(rs.next()){
-                 isExist=true;
-             }
-             else{
-                 isExist=false;
+                 JOptionPane.showMessageDialog(this,"Login Successfully");
+                 HomePage home =new HomePage();
+                 home.setVisible(true);
+                 this.dispose();
+             }else{
+                 JOptionPane.showMessageDialog(this,"Incorrect Username or Password");
              }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return isExist;
     }
 
     /**
@@ -137,12 +96,6 @@ public class SignUpPage extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         txt_password = new app.bolivia.swing.JCTextField();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        txt_email = new app.bolivia.swing.JCTextField();
-        txt_contact = new app.bolivia.swing.JCTextField();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
         rSMaterialButtonCircle2 = new rojerusan.RSMaterialButtonCircle();
         rSMaterialButtonCircle3 = new rojerusan.RSMaterialButtonCircle();
         jLabel20 = new javax.swing.JLabel();
@@ -155,7 +108,7 @@ public class SignUpPage extends javax.swing.JFrame {
         jPanel1.setMinimumSize(new java.awt.Dimension(670, 620));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/signup-library-icon.png"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/library-3.png.png"))); // NOI18N
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 700, 560));
 
         jLabel1.setFont(new java.awt.Font("SimSun-ExtB", 1, 18)); // NOI18N
@@ -187,7 +140,7 @@ public class SignUpPage extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Verdana", 0, 17)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Account_50px.png"))); // NOI18N
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 230, 50, 50));
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 330, 50, 50));
 
         jLabel7.setFont(new java.awt.Font("Shruti", 0, 30)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -201,8 +154,8 @@ public class SignUpPage extends javax.swing.JFrame {
 
         jLabel8.setFont(new java.awt.Font("Verdana", 0, 17)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("Create New account Here");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 150, 250, -1));
+        jLabel8.setText("Welcome,Login To Your Account");
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 190, 290, -1));
 
         txt_username.setBackground(new java.awt.Color(102, 102, 255));
         txt_username.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 255, 255)));
@@ -218,12 +171,12 @@ public class SignUpPage extends javax.swing.JFrame {
                 txt_usernameActionPerformed(evt);
             }
         });
-        jPanel2.add(txt_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, 310, 40));
+        jPanel2.add(txt_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 340, 310, 40));
 
         jLabel9.setFont(new java.awt.Font("Verdana", 0, 17)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setText("Username");
-        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 210, 110, -1));
+        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 310, 110, -1));
 
         jPanel3.setBackground(new java.awt.Color(102, 102, 255));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -264,12 +217,12 @@ public class SignUpPage extends javax.swing.JFrame {
         jLabel14.setFont(new java.awt.Font("Verdana", 0, 17)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
         jLabel14.setText("Password");
-        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 310, 110, -1));
+        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 410, 110, -1));
 
         jLabel15.setFont(new java.awt.Font("Verdana", 0, 17)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Secure_50px.png"))); // NOI18N
-        jPanel2.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, 50, 50));
+        jPanel2.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 430, 50, 50));
 
         txt_password.setBackground(new java.awt.Color(102, 102, 255));
         txt_password.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 255, 255)));
@@ -280,72 +233,35 @@ public class SignUpPage extends javax.swing.JFrame {
                 txt_passwordActionPerformed(evt);
             }
         });
-        jPanel2.add(txt_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 340, 310, 40));
-
-        jLabel16.setFont(new java.awt.Font("Verdana", 0, 17)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel16.setText("Email");
-        jPanel2.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, 110, -1));
-
-        jLabel17.setFont(new java.awt.Font("Verdana", 0, 17)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Secured_Letter_50px.png"))); // NOI18N
-        jPanel2.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 50, 50));
-
-        txt_email.setBackground(new java.awt.Color(102, 102, 255));
-        txt_email.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 255, 255)));
-        txt_email.setFont(new java.awt.Font("Segoe UI", 0, 17)); // NOI18N
-        txt_email.setPlaceholder("Enter Email");
-        txt_email.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_emailActionPerformed(evt);
-            }
-        });
-        jPanel2.add(txt_email, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 450, 310, 40));
-
-        txt_contact.setBackground(new java.awt.Color(102, 102, 255));
-        txt_contact.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 255, 255)));
-        txt_contact.setFont(new java.awt.Font("Segoe UI", 0, 17)); // NOI18N
-        txt_contact.setPlaceholder("Enter Contact");
-        txt_contact.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_contactActionPerformed(evt);
-            }
-        });
-        jPanel2.add(txt_contact, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 560, 310, 40));
-
-        jLabel18.setFont(new java.awt.Font("Verdana", 0, 17)); // NOI18N
-        jLabel18.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Google_Mobile_50px.png"))); // NOI18N
-        jPanel2.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 550, 50, 50));
-
-        jLabel19.setFont(new java.awt.Font("Verdana", 0, 17)); // NOI18N
-        jLabel19.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel19.setText("Contact");
-        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 530, 110, -1));
+        jPanel2.add(txt_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 440, 310, 40));
 
         rSMaterialButtonCircle2.setBackground(new java.awt.Color(51, 51, 255));
         rSMaterialButtonCircle2.setText("Login");
-        rSMaterialButtonCircle2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                rSMaterialButtonCircle2MouseClicked(evt);
+        rSMaterialButtonCircle2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSMaterialButtonCircle2ActionPerformed(evt);
             }
         });
-        jPanel2.add(rSMaterialButtonCircle2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 700, 320, 60));
+        jPanel2.add(rSMaterialButtonCircle2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 540, 370, 60));
 
         rSMaterialButtonCircle3.setBackground(new java.awt.Color(255, 51, 51));
         rSMaterialButtonCircle3.setText("SignUp");
+        rSMaterialButtonCircle3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rSMaterialButtonCircle3MouseClicked(evt);
+            }
+        });
         rSMaterialButtonCircle3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rSMaterialButtonCircle3ActionPerformed(evt);
             }
         });
-        jPanel2.add(rSMaterialButtonCircle3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 640, 320, 60));
+        jPanel2.add(rSMaterialButtonCircle3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 640, 370, 60));
 
         jLabel20.setFont(new java.awt.Font("Stencil", 0, 25)); // NOI18N
         jLabel20.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel20.setText("SignUp Page");
-        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 110, 180, -1));
+        jLabel20.setText("Login Page");
+        jPanel2.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 150, 180, -1));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, -70, 470, 790));
 
@@ -365,24 +281,8 @@ public class SignUpPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_passwordActionPerformed
 
-    private void txt_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_emailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_emailActionPerformed
-
-    private void txt_contactActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_contactActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_contactActionPerformed
-
     private void rSMaterialButtonCircle3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonCircle3ActionPerformed
-        if(validateSignUp()==true ){
-            if(checkDuplicateUser()== false){
-                insertSignUpDetails();
-            }
-            else{
-                JOptionPane.showMessageDialog(this, "Username Already Exists!!");
-            }
         
-        }
     }//GEN-LAST:event_rSMaterialButtonCircle3ActionPerformed
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
@@ -390,16 +290,21 @@ public class SignUpPage extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel7MouseClicked
 
     private void txt_usernameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_usernameFocusLost
-        if(checkDuplicateUser()==true){ 
-            JOptionPane.showMessageDialog(this, "Username Already Exists!!");
-        }
+        
     }//GEN-LAST:event_txt_usernameFocusLost
 
-    private void rSMaterialButtonCircle2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rSMaterialButtonCircle2MouseClicked
-        LoginPage lg=new LoginPage();
-        lg.setVisible(true);
+    private void rSMaterialButtonCircle2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonCircle2ActionPerformed
+        // TODO add your handling code here:
+        if(validateLogin()){
+            login();
+        }
+    }//GEN-LAST:event_rSMaterialButtonCircle2ActionPerformed
+
+    private void rSMaterialButtonCircle3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rSMaterialButtonCircle3MouseClicked
+        SignUpPage sg=new SignUpPage();
+        sg.setVisible(true);
         dispose();
-    }//GEN-LAST:event_rSMaterialButtonCircle2MouseClicked
+    }//GEN-LAST:event_rSMaterialButtonCircle3MouseClicked
 
     /**
      * @param args the command line arguments
@@ -418,20 +323,21 @@ public class SignUpPage extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SignUpPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SignUpPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SignUpPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SignUpPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SignUpPage().setVisible(true);
+                new LoginPage().setVisible(true);
             }
         });
     }
@@ -445,10 +351,6 @@ public class SignUpPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
@@ -463,8 +365,6 @@ public class SignUpPage extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private rojerusan.RSMaterialButtonCircle rSMaterialButtonCircle2;
     private rojerusan.RSMaterialButtonCircle rSMaterialButtonCircle3;
-    private app.bolivia.swing.JCTextField txt_contact;
-    private app.bolivia.swing.JCTextField txt_email;
     private app.bolivia.swing.JCTextField txt_password;
     private app.bolivia.swing.JCTextField txt_username;
     // End of variables declaration//GEN-END:variables
