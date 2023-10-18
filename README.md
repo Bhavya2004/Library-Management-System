@@ -1,9 +1,9 @@
 <h1>Project Description</h1>
-**Project Title** : Library Management System<br/>
-**Core Language Used** : Java <br/>
-**IDE used** : Netbeans<br/>
-**Database** : MYSQL<br/>
-**Server** : XAMPP<br/>
+  Project Title : Library Management System<br/>
+  Core Language Used : Java <br/>
+  IDE used : Netbeans<br/>
+  Database : MYSQL<br/>
+  Server : XAMPP<br/>
 
 <h1>Screen Description</h1>
 1. Login Screen : Login with your Username and Password if you are an existing user.<br/>
